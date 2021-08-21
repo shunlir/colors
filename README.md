@@ -3,9 +3,12 @@
 There exists common confusion about terminal colors. This is what we have right now:
 
 - Plain ASCII
-- ANSI escape codes: 16 color codes with bold/italic and background
+- ANSI escape codes:
+  - 8 colors
+  - 8 colors + extra 8 foreground colors (when SGR 1 interpreted as bright colors, some terminal emulators can be configured to bright, bold or both)
+  - 16 colors: 8 colors + 8 aixterm bright colors
 - 256 color palette: 216 colors + 16 ANSI + 24 gray (colors are 24-bit)
-- 24-bit true color: "888" colors (aka 16 milion)
+- 24-bit true color: "888" colors (aka 16 milion), direct color
 
 ```bash
 printf "\x1b[${bg};2;${red};${green};${blue}m\n"
@@ -61,6 +64,10 @@ Since
 terminfo began to support the 24-bit True Color capability under the name of
 "RGB". You need to use the "setaf" and "setab" commands to set the foreground
 and background respectively.
+
+[ncurses 6.1, released January 27, 2018](https://invisible-island.net/ncurses/announce-6.1.html)
+added the 'RGB' flag, it's an extension which tells the library how to quickly compute the
+color-content for a given color value.
 
 # True Color Detection
 
@@ -155,6 +162,7 @@ either.
   [landed](https://git.tartarus.org/?p=simon/putty.git;a=commit;h=a4cbd3dfdb71d258e83bbf5b03a874c06d0b3106)
   in git (patched version [3] {xterm-like approximation to 256 colors} and [4]
   {real true colors} available) - **Windows platform**
+  - since version 0.71 ([released 2019-03-16](https://www.chiark.greenend.org.uk/~sgtatham/putty/changes.html))
 - [Tera Term](http://en.sourceforge.jp/projects/ttssh2/) [delimeter: colon,
   semicolon] - **Windows platform**
 - [ConEmu](https://github.com/Maximus5/ConEmu) [delimeter: semicolon] -
@@ -254,8 +262,11 @@ much more complex)
 
 ## Terminal multiplexers
 
-- [tmux](http://tmux.github.io/) - starting from version 2.2 (support since
+- [tmux](http://tmux.github.io/)
+  - starting from version 2.2 (support since
   [427b820...](https://github.com/tmux/tmux/commit/427b8204268af5548d09b830e101c59daa095df9))
+  - since version 2.7, added the 'RGB' flag detection, old 'Tc' extension was keept for backwards compatability
+  [fe7a871...](https://github.com/tmux/tmux/commit/fe7a871a23ada0c71fb0886ef99a356c67bf5c0d)
 - [screen](http://git.savannah.gnu.org/cgit/screen.git/) - has support in
   'master' branch, need to be enabled (see 'truecolor' option)
 - [pymux](https://github.com/jonathanslenders/pymux) - tmux clone in pure Python
